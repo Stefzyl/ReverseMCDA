@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Decision Matrix</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Multi-Criteria Decision Analysis Tool</h1>
+
+  <!-- Controls -->
+  <div id="controls">
+    <button onclick="addCriterion()">Add Criterion</button>
+    <button onclick="removeCriterion()">Remove Criterion</button>
+    <button onclick="addPrototype()">Add Prototype</button>
+    <button onclick="removePrototype()">Remove Prototype</button>
+    <button onclick="runReverse()">Reversal!</button>
+    <button onclick="clearTables()">Clear Tables</button>
+    <button onclick="saveState()">Save Preset</button>
+    <input type="file" id="fileInput" accept=".json" style="display:none" onchange="loadStateFromFile(this)">
+    <button onclick="document.getElementById('fileInput').click()">Load Preset</button>
+  </div>
+
+  <!-- Tables -->
+  <div id="table-container">
+    <!-- Criteria Table -->
+    <div class="table-wrapper">
+      <h2>Criteria</h2>
+      <table id="left-table">
+        <thead>
+          <tr>
+            <th>Criterion</th>
+            <th>Weight</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Filled dynamically -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Prototype Table -->
+    <div class="table-wrapper">
+      <h2>Prototypes</h2>
+      <table id="right-table">
+        <thead>
+          <tr id="prototype-select-row">
+            <!-- Radio buttons (input type="radio") go here -->
+          </tr>
+          <tr id="prototype-header">
+            <!-- Prototype name inputs go here -->
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Score rows (input type="number") go here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div id="score-summary-wrapper" style="max-width: 200px; margin-top: 20px;">
+    <table id="score-summary" style="width: 100%; border-collapse: collapse;">
+      <tbody></tbody>
+    </table>
+  </div>
+
+
+
+  <!-- Output -->
+  <div>
+    <pre id="reverse-output" style="margin-top: 1em; background: #f4f4f4; padding: 1em;"></pre>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

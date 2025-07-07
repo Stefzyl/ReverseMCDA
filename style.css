@@ -1,0 +1,157 @@
+body {
+  font-family: sans-serif;
+  margin: 20px;
+}
+
+#controls {
+  margin-bottom: 20px;
+}
+
+#table-container {
+  display: flex;
+  gap: 40px;
+}
+
+.table-wrapper {
+  flex: 1;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 4px;
+  text-align: center;
+}
+
+input {
+  width: 100%;
+  padding: 4px;
+  box-sizing: border-box;
+}
+
+/* Remove number input arrows */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+th {
+  font-weight: normal;
+  padding: 4px;
+  height: 30px;
+}
+td {
+  height: 30px;
+}
+
+.table-wrapper:first-child {
+  flex: 0 1 200px;  /* don't grow bigger than 300px, but shrink if needed */
+  max-width: 200px;
+  min-width: 100px; /* optional: set minimum width */
+}
+
+.table-wrapper:last-child {
+  flex: 2; /* Right (prototype) table takes up 2x more space */
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+#right-table {
+  width: auto;
+  min-width: calc(120px * var(--col-count));
+  table-layout: fixed; /* keep consistent */
+}
+
+#left-table {
+  min-width: calc(180px);
+  table-layout: fixed; /* keep consistent */
+}
+
+
+#left-table,
+#right-table {
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+#left-table th,
+#left-table td,
+#right-table th,
+#right-table td {
+  padding: 4px;
+  height: 34px;
+  text-align: center;
+}
+
+#left-table {
+  margin-top:62px; /* Adjust this to match your prototype selector row height */
+}
+#prototype-select-row th {
+  border: none;
+  background: transparent;
+  padding: 4px;
+  height: 34px;
+  vertical-align: middle;
+}
+
+#prototype-select-row input[type="radio"] {
+  margin: 0 auto;
+  display: block;
+  position: relative;
+  top: 2px; /* Adjust slightly to visually center in Safari */
+}
+
+input[type="radio"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #666;
+  border-radius: 50%;
+  background: white;
+  display: inline-block;
+  position: relative;
+}
+
+input[type="radio"]:checked::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 8px;
+  height: 8px;
+  background: #333;
+  border-radius: 50%;
+}
+
+
+#reverse-output {
+  font-family: monospace;
+  white-space: pre-wrap;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+#score-table-container {
+  max-width: 300px; /* Limit container width */
+  margin-top: 20px;
+}
+#score-summary td {
+  border: 1px solid #ccc;
+  padding: 4px;
+  text-align: left;
+}
+#score-summary td:nth-child(2) {
+  text-align: right;
+  font-weight: bold;
+}
+
