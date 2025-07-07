@@ -232,12 +232,13 @@ function getConceptData() {
 // python functions imported
 
 function bestScore(conceptNames, concepts, weights) {
-  const scores = conceptNames.map((_, conceptIdx) => {
-    let total = 0;
-    for (let i = 0; i < weights.length; i++) {
-      total += weights[i] * concepts[conceptIdx][i];
-    }
-    return total;
+  // Transpose from [criterion][concept] to [concept][criterion]
+  const transposed = conceptNames.map((_, cIdx) =>
+    concepts.map(row => row[cIdx])
+  );
+
+  const scores = transposed.map((conceptScores) => {
+    return conceptScores.reduce((sum, val, i) => sum + val * weights[i], 0);
   });
 
   const indexMax = scores.indexOf(Math.max(...scores));
@@ -253,6 +254,9 @@ function bestScore(conceptNames, concepts, weights) {
     scoreGap: diff
   };
 }
+
+
+
 function singleDelta(criteriaNames, conceptNames, concepts, weights, desiredConcept, epsilon = 0.01, maxIterations = 100) {
   if (!conceptNames.includes(desiredConcept)) {
     return { status: "noDesiredConcept" };
