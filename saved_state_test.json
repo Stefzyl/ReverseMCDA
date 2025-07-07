@@ -1,0 +1,39 @@
+{
+  "criteriaNames": [
+    "Speed",
+    "Weight",
+    "Fuel Consumption"
+  ],
+  "weights": [
+    0.4,
+    0.8,
+    0.3
+  ],
+  "conceptNames": [
+    "Pontoon",
+    "Raceboat",
+    "Canoe",
+    "Yacht"
+  ],
+  "concepts": [
+    [
+      0.4,
+      0.8,
+      0.1,
+      0.6
+    ],
+    [
+      0.4,
+      0.6,
+      0.9,
+      0.3
+    ],
+    [
+      0.7,
+      0.3,
+      0.9,
+      0.2
+    ]
+  ],
+  "desiredConcept": "Raceboat"
+}
