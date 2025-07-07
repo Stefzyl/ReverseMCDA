@@ -39,9 +39,6 @@ input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-input[type="number"] {
-  -moz-appearance: textfield;
-}
 
 th {
   font-weight: normal;
@@ -155,3 +152,33 @@ input[type="radio"]:checked::before {
   font-weight: bold;
 }
 
+
+#score-summary-wrapper {
+  margin-top: 20px;
+  max-width: 200px; /* Optional: limit width */
+  font-family: sans-serif; /* Match body font */
+}
+
+#score-summary {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: inherit; /* Inherit font from wrapper */
+}
+
+#score-summary td {
+  border: 1px solid #ccc;
+  padding: 4px;
+  text-align: left; /* align text left for names */
+  font-size: 14px; /* match other tables or tweak */
+  height: 30px;
+}
+
+#score-summary td:last-child {
+  text-align: right; /* align scores right for clarity */
+  font-weight: bold;
+}
+
+#score-summary h3 {
+  margin-bottom: 8px;
+  font-weight: normal;
+}

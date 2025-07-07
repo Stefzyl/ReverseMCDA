@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Multi-Criteria Decision Analysis Tool</h1>
+  <h1>Reverse MCDA</h1>
 
   <!-- Controls -->
   <div id="controls">
@@ -25,7 +25,7 @@
   <div id="table-container">
     <!-- Criteria Table -->
     <div class="table-wrapper">
-      <h2>Criteria</h2>
+      <h3>Criteria</h3>
       <table id="left-table">
         <thead>
           <tr>
@@ -41,7 +41,7 @@
 
     <!-- Prototype Table -->
     <div class="table-wrapper">
-      <h2>Prototypes</h2>
+      <h3>Prototypes</h3>
       <table id="right-table">
         <thead>
           <tr id="prototype-select-row">
@@ -56,6 +56,12 @@
         </tbody>
       </table>
     </div>
+  </div>
+    <div id="score-summary-wrapper">
+    <h3>Prototype Scores</h3>
+    <table id="score-summary">
+      <tbody></tbody>
+    </table>
   </div>
   <div id="score-summary-wrapper" style="max-width: 200px; margin-top: 20px;">
     <table id="score-summary" style="width: 100%; border-collapse: collapse;">

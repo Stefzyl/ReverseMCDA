@@ -111,6 +111,7 @@ function setTableDimensions(requestedRows, requestedCols) {
 
   updateColumnCountStyle();
   attachInputListeners();
+  updateScoreTable()
 }
 
 
@@ -630,11 +631,9 @@ function updateScoreTable() {
   const summaryTbody = document.querySelector("#score-summary tbody");
   summaryTbody.innerHTML = ""; // Clear previous rows
 
-  const headerInputs = document.querySelectorAll("#prototype-header th input");
+  const headerInputs = document.querySelectorAll("#prototype-header th input"); // prototypes
   const scoreRows = document.querySelectorAll("#right-table tbody tr");
   const weightInputs = document.querySelectorAll("#left-table tbody tr td:nth-child(2) input");
-
-  const prototypeScores = [];
 
   headerInputs.forEach((headerInput, colIdx) => {
     let totalScore = 0;
@@ -647,26 +646,17 @@ function updateScoreTable() {
       totalScore += score * weight;
     });
 
-    prototypeScores.push({
-      name: headerInput.value.trim() || `Prototype ${colIdx + 1}`,
-      score: totalScore.toFixed(2)
-    });
-  });
-
-  // Add each prototype’s name and score as a row
-  prototypeScores.forEach(({ name, score }) => {
     const tr = document.createElement("tr");
 
     const nameTd = document.createElement("td");
-    nameTd.textContent = name;
+    nameTd.textContent = headerInput.value.trim() || `Prototype ${colIdx + 1}`;
     nameTd.style.paddingRight = "10px";
 
     const scoreTd = document.createElement("td");
-    scoreTd.textContent = score;
+    scoreTd.textContent = totalScore.toFixed(2);
 
     tr.appendChild(nameTd);
     tr.appendChild(scoreTd);
     summaryTbody.appendChild(tr);
   });
 }
-
