@@ -256,7 +256,6 @@ function bestScore(conceptNames, concepts, weights) {
 }
 
 
-
 function singleDelta(criteriaNames, conceptNames, concepts, weights, desiredConcept, epsilon = 0.01, maxIterations = 100) {
   if (!conceptNames.includes(desiredConcept)) {
     return { status: "noDesiredConcept" };
@@ -272,24 +271,24 @@ function singleDelta(criteriaNames, conceptNames, concepts, weights, desiredConc
 
   const results = [];
 
-  // Try adjusting weights
-  for (let i = 0; i < weights.length; i++) {
+  // === Try adjusting weights ===
+  for (let weightIdx = 0; weightIdx < weights.length; weightIdx++) {
     for (let target of [1, 0]) {
       const tempWeights = [...weights];
-      tempWeights[i] = target;
+      tempWeights[weightIdx] = target;
 
       let test = bestScore(conceptNames, concepts, tempWeights);
       if (test.bestConcept === desiredConcept && test.scoreGap > epsilon) {
-        const step = (tempWeights[i] - weights[i]) / maxIterations;
+        const step = (tempWeights[weightIdx] - weights[weightIdx]) / maxIterations;
         const trialWeights = [...weights];
 
         for (let n = 1; n <= maxIterations; n++) {
-          trialWeights[i] += step;
+          trialWeights[weightIdx] += step;
           const testResult = bestScore(conceptNames, concepts, trialWeights);
 
           if (testResult.bestConcept === desiredConcept && testResult.scoreGap > epsilon) {
-            const delta = trialWeights[i] - weights[i];
-            results.push(`Change weight for criterion "${criteriaNames[i]}" by ${delta.toFixed(2)}`);
+            const delta = trialWeights[weightIdx] - weights[weightIdx];
+            results.push(`Change weight for criterion "${criteriaNames[weightIdx]}" by ${delta.toFixed(2)}`);
             break;
           }
         }
@@ -297,25 +296,25 @@ function singleDelta(criteriaNames, conceptNames, concepts, weights, desiredConc
     }
   }
 
-  // Try adjusting scores
-  for (let conceptIdx = 0; conceptIdx < concepts.length; conceptIdx++) {
-    for (let critIdx = 0; critIdx < concepts[conceptIdx].length; critIdx++) {
+  // === Try adjusting scores (criterion x concept) ===
+  for (let criterionIdx = 0; criterionIdx < concepts.length; criterionIdx++) {
+    for (let conceptIdx = 0; conceptIdx < concepts[criterionIdx].length; conceptIdx++) {
       for (let target of [1, 0]) {
         const tempConcepts = concepts.map(row => [...row]);
-        tempConcepts[conceptIdx][critIdx] = target;
+        tempConcepts[criterionIdx][conceptIdx] = target;
 
         let test = bestScore(conceptNames, tempConcepts, weights);
         if (test.bestConcept === desiredConcept && test.scoreGap > epsilon) {
-          const step = (tempConcepts[conceptIdx][critIdx] - concepts[conceptIdx][critIdx]) / maxIterations;
+          const step = (tempConcepts[criterionIdx][conceptIdx] - concepts[criterionIdx][conceptIdx]) / maxIterations;
           const trialConcepts = concepts.map(row => [...row]);
 
           for (let n = 1; n <= maxIterations; n++) {
-            trialConcepts[conceptIdx][critIdx] += step;
+            trialConcepts[criterionIdx][conceptIdx] += step;
             const testResult = bestScore(conceptNames, trialConcepts, weights);
 
             if (testResult.bestConcept === desiredConcept && testResult.scoreGap > epsilon) {
-              const delta = trialConcepts[conceptIdx][critIdx] - concepts[conceptIdx][critIdx];
-              results.push(`Change the score of concept "${conceptNames[conceptIdx]}" at criterion "${criteriaNames[critIdx]}" by ${delta.toFixed(2)}`);
+              const delta = trialConcepts[criterionIdx][conceptIdx] - concepts[criterionIdx][conceptIdx];
+              results.push(`Change the score of concept "${conceptNames[conceptIdx]}" at criterion "${criteriaNames[criterionIdx]}" by ${delta.toFixed(2)}`);
               break;
             }
           }
@@ -329,18 +328,16 @@ function singleDelta(criteriaNames, conceptNames, concepts, weights, desiredConc
     : { status: "notFound" };
 }
 
+
+
 function doubleDelta(criteriaNames, conceptNames, concepts, weights, desiredConcept, epsilon = 0.01, maxIterations = 100) {
   if (!conceptNames.includes(desiredConcept)) {
     return `${desiredConcept} is NOT a valid desired concept name.`;
   }
 
   const desiredIdx = conceptNames.indexOf(desiredConcept);
-  const numConcepts = concepts.length;
-  const numCriteria = weights.length;
-
-  if (!Array.isArray(concepts[0]) || concepts[0].length !== numCriteria) {
-    return "Invalid concept score matrix dimensions.";
-  }
+  const numCriteria = concepts.length;
+  const numConcepts = conceptNames.length;
 
   const results = [];
   const deepCopy = obj => JSON.parse(JSON.stringify(obj));
@@ -358,7 +355,9 @@ function doubleDelta(criteriaNames, conceptNames, concepts, weights, desiredConc
       for (let cIdx = 0; cIdx < numConcepts; cIdx++) {
         for (let critIdx = 0; critIdx < numCriteria; critIdx++) {
           const tempConcepts = deepCopy(concepts);
-          tempConcepts[cIdx][critIdx] = (cIdx === desiredIdx) ? 1 : 0;
+
+          // Set desired concept's score to 1, others to 0 at the given criterion
+          tempConcepts[critIdx][cIdx] = (cIdx === desiredIdx) ? 1 : 0;
 
           const tempResult = bestScore(conceptNames, tempConcepts, tempWeights);
           let bestDeltaWeight = null;
@@ -367,7 +366,7 @@ function doubleDelta(criteriaNames, conceptNames, concepts, weights, desiredConc
 
           if (tempResult.bestConcept === desiredConcept && tempResult.scoreGap > epsilon) {
             const weightStep = (tempWeights[wIdx] - weights[wIdx]) / maxIterations;
-            const scoreStep = (tempConcepts[cIdx][critIdx] - concepts[cIdx][critIdx]) / maxIterations;
+            const scoreStep = (tempConcepts[critIdx][cIdx] - concepts[critIdx][cIdx]) / maxIterations;
 
             for (let ws = 1; ws <= maxIterations; ws++) {
               const testWeights = [...weights];
@@ -375,13 +374,13 @@ function doubleDelta(criteriaNames, conceptNames, concepts, weights, desiredConc
 
               for (let ss = 1; ss <= maxIterations; ss++) {
                 const testConcepts = deepCopy(concepts);
-                testConcepts[cIdx][critIdx] = concepts[cIdx][critIdx] + ss * scoreStep;
+                testConcepts[critIdx][cIdx] = concepts[critIdx][cIdx] + ss * scoreStep;
 
                 const testResult = bestScore(conceptNames, testConcepts, testWeights);
 
                 if (testResult.bestConcept === desiredConcept && testResult.scoreGap > epsilon) {
                   const deltaW = testWeights[wIdx] - weights[wIdx];
-                  const deltaS = testConcepts[cIdx][critIdx] - concepts[cIdx][critIdx];
+                  const deltaS = testConcepts[critIdx][cIdx] - concepts[critIdx][cIdx];
                   const total = Math.abs(deltaW) + Math.abs(deltaS);
 
                   if (total < minTotalChange) {
@@ -409,6 +408,8 @@ function doubleDelta(criteriaNames, conceptNames, concepts, weights, desiredConc
     return "No double delta result found. Please try adjusting your criteria or concepts.";
   }
 }
+
+
 
 // === Run reverse optimization ===
 function runReverse() {
